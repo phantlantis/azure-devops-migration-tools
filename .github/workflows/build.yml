@@ -1,0 +1,26 @@
+name: Build
+
+on:
+  push:
+    branches: [ feature/global-cli-flags ]
+  pull_request:
+    branches: [ feature/global-cli-flags ]
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet publish --configuration Release --no-restore
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Artifacts
+        path:
+          D:/a/azure-devops-migration-tools/azure-devops-migration-tools/src/MigrationTools.ConsoleFull/bin/Release/net472/publish/
