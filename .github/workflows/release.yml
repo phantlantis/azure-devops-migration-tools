@@ -17,8 +17,9 @@ jobs:
     - name: Build
       run: dotnet publish --configuration Release --no-restore 
     - name: Upload artifacts
-      uses: skx/github-action-publish-binaries@master
+      run: pwsh -command ".\$GITHUB_WORKSPACE\scripts\upload-artifacts-release.ps1"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        args: 'D:/a/azure-devops-migration-tools/azure-devops-migration-tools/src/MigrationTools.ConsoleFull/bin/Release/net472/publish/'
+        GITHUB_EVENT_PATH: ${{ GITHUB_EVENT_PATH }}
+        GITHUB_REPOSITORY: ${{ GITHUB_REPOSITORY }}
+        ARTIFACTS_DIRECTORY: 'D:/a/azure-devops-migration-tools/azure-devops-migration-tools/src/MigrationTools.ConsoleFull/bin/Release/net472/publish/'
