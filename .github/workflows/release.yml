@@ -20,6 +20,4 @@ jobs:
       run: pwsh -command ".\$GITHUB_WORKSPACE\scripts\upload-artifacts-release.ps1"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_EVENT_PATH: ${{ GITHUB_EVENT_PATH }}
-        GITHUB_REPOSITORY: ${{ GITHUB_REPOSITORY }}
         ARTIFACTS_DIRECTORY: 'D:/a/azure-devops-migration-tools/azure-devops-migration-tools/src/MigrationTools.ConsoleFull/bin/Release/net472/publish/'
