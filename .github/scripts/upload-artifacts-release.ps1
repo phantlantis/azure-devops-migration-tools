@@ -21,11 +21,11 @@ if ([string]::IsNullOrWhiteSpace($env:ARTIFACTS_DIRECTORY)) {
     Exit 1
 }
 
-if ($(Test-Path $ARTIFACTS_DIRECTORY) -eq $false) {
+if ($(Test-Path $env:ARTIFACTS_DIRECTORY) -eq $false) {
     Write-Host "Artifacts Directory $env:ARTIFACTS_DIRECTORY not found!"
 }
 
-$githubEvent = ConvertFrom-Json -Path $env:GITHUB_EVENT_PATH
+$githubEvent = get-content -raw -path $env:GITHUB_EVENT_PATH | ConvertFrom-Json
 
 $zippedArtifacts = Compress-Archive -Path $env:ARTIFACTS_DIRECTORY -DestinationPath ./MigrationTools-$($githubEvent.release.id).zip
 
