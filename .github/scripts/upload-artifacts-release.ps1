@@ -36,6 +36,6 @@ write-host "DEBUG:GITHUB_REPOSITORY = $env:GITHUB_REPOSITORY"
 
 
 
-$uri = "https://uploads.github.com/repos/$($env:GITHUB_REPOSITORY)/releases/$($githubEvent.release.id)/assets?name=MigrationTools-$($githubEvent.release.id).zip"
+$uri = "https://uploads.github.com/repos/$($env:GITHUB_REPOSITORY)/releases/$($githubEvent.release.id)/assets?name=MigrationTools-$($githubEvent.release.tag_name).zip"
 $headers = @{'Authorization' = "token $($env:GITHUB_TOKEN)"}
 $r = Invoke-RestMethod -Uri $uri -Headers $headers -Method POST -ContentType "application/zip" -Infile ./MigrationTools-$($githubEvent.release.id).zip
