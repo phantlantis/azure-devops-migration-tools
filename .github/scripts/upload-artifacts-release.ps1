@@ -8,6 +8,7 @@
 #  GITHUB_TOKEN: Comes from Github secrets.
 #  GITHUB_EVENT_PATH: path to GitHub Release Event, a JSON file.
 #  GITHUB_REPOSITORY: Owner and Repository Name
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 #Comes from Github
 if ([string]::IsNullOrWhiteSpace($env:GITHUB_TOKEN)) {
