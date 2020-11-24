@@ -30,4 +30,11 @@ $githubEvent = get-content -raw -path $env:GITHUB_EVENT_PATH | ConvertFrom-Json
 
 $zippedArtifacts = Compress-Archive -Path $env:ARTIFACTS_DIRECTORY -DestinationPath ./MigrationTools-$($githubEvent.release.id).zip
 
+write-host "DEBUG:ARTIFACTS_DIRECTORY = $env:ARTIFACTS_DIRECTORY"
+write-host "DEBUG:GITHUB_EVENT_PATH = $env:GITHUB_EVENT_PATH"
+write-host "DEBUG:GITHUB_REPOSITORY = $env:GITHUB_REPOSITORY"
+
+
+
+
 $r = Invoke-RestMethod -Uri "https://uploads.github.com/repos/$($env:GITHUB_REPOSITORY)/releases/$($env:RELEASE_ID)/assets?name=MigrationTools-$($githubEvent.release.id).zip" -Headers @{'Authorization' = "token $($env:GITHUB_TOKEN)"} -Method POST -ContentType "application/zip" -Infile ./MigrationTools-$($githubEvent.release.id).zip
