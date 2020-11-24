@@ -17,7 +17,7 @@ jobs:
     - name: Build
       run: dotnet publish --configuration Release --no-restore 
     - name: Upload artifacts
-      run: pwsh -command "${{github.workspace}}\scripts\upload-artifacts-release.ps1"
+      run: pwsh -command "${{github.workspace}}\.github\scripts\upload-artifacts-release.ps1"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         ARTIFACTS_DIRECTORY: 'D:/a/azure-devops-migration-tools/azure-devops-migration-tools/src/MigrationTools.ConsoleFull/bin/Release/net472/publish/'
