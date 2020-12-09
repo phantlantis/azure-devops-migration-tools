@@ -15,7 +15,7 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
     - name: Build/Publish
-      run: dotnet publish /property:GenerateFullPaths=true
+      run: dotnet publish -configuration Release /property:GenerateFullPaths=true
     - name: Upload artifacts
       run: pwsh -command "${{github.workspace}}\.github\scripts\upload-artifacts-release.ps1"
       env:
