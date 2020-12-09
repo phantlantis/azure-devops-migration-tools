@@ -17,21 +17,27 @@ if ([string]::IsNullOrWhiteSpace($env:GITHUB_TOKEN)) {
 $githubEvent = get-content -raw -path $env:GITHUB_EVENT_PATH | ConvertFrom-Json
 
 $publishArtifactsDirs = @(
-    "D:/a/azure-devops-migration-tools/azure-devops-migration-tools/src/MigrationTools.ConsoleFull/bin/Release/net472/publish",
-    "D:/a/azure-devops-migration-tools/azure-devops-migration-tools/src/VstsSyncMigrator.Core/bin/Release/net472/publish"
+    "D:/a/azure-devops-migration-tools/azure-devops-migration-tools/src/MigrationTools.ConsoleFull/bin/Release/net472/publish/*",
+    "D:/a/azure-devops-migration-tools/azure-devops-migration-tools/src/VstsSyncMigrator.Core/bin/Release/net472/publish/*"
+)
+
+$publishArtifactDlls = @(
+    "Microsoft.WITDatastore32.dll",
+    "Microsoft.WITDatastore64.dll"
 )
 
 #Create new Directory
 $destDirName = "./MigrationTools-$($githubEvent.release.id)"
 New-Item -Path "$destDirName" -ItemType "Directory" 
+Copy-Item -Path $publishArtifactsDirs -Destination $destDirName -Recurse
 
-foreach ($artifactDir in $publishArtifactsDirs) {
-    if ($(Test-Path $artifactDir) -eq $false) {
-            Write-Host "Artifacts Directory $artifactDir not found!"
-            Exit 1
-        }
-
-    Copy-Item -Path "$artifactDir/*" -Destination $destDirName -Recurse
+foreach ($dll in $publishArtifactDlls) {
+    $actualDllPath = gci "D:/a/azure-devops-migration-tools" -recurse | ? {$_.Name -eq $dll}
+    if ($(Test-Path $actualDllPath) -eq $false) {
+        Write-Host "DLL $dll Not found anywhere"
+        Exit 1
+    }
+    Copy-Item -Path $actualDllPath -Destination $destDirName
 }
 
 $zippedArtifacts = Compress-Archive -Path $destDirName -DestinationPath ./MigrationTools-$($githubEvent.release.id).zip
