@@ -1,7 +1,4 @@
 #  Environment Variables:
-#  User Provided:
-#  ARTIFACTS_DIRECTORY: Source Directory to compress artifacts. Only accepts a single dir
-#  
 #  
 #  GitHub Default Environment Variables:
 #  See: https://docs.github.com/en/free-pro-team@latest/actions/reference/environment-variables
@@ -16,23 +13,32 @@ if ([string]::IsNullOrWhiteSpace($env:GITHUB_TOKEN)) {
     Exit 1
 }
 
-#Artifacts dir to zip up and add
-if ([string]::IsNullOrWhiteSpace($env:ARTIFACTS_DIRECTORY)) {
-    Write-Host "Please Specify Artifacts Directory!"
-    Exit 1
-}
-
-if ($(Test-Path $env:ARTIFACTS_DIRECTORY) -eq $false) {
-    Write-Host "Artifacts Directory $env:ARTIFACTS_DIRECTORY not found!"
-}
 
 $githubEvent = get-content -raw -path $env:GITHUB_EVENT_PATH | ConvertFrom-Json
 
-$zippedArtifacts = Compress-Archive -Path $env:ARTIFACTS_DIRECTORY -DestinationPath ./MigrationTools-$($githubEvent.release.id).zip
+$publishArtifactsDirs = @(
+    "D:/a/azure-devops-migration-tools/azure-devops-migration-tools/src/MigrationTools.ConsoleFull/bin/Release/net472/publish",
+    "D:/a/azure-devops-migration-tools/azure-devops-migration-tools/src/VstsSyncMigrator.Core/bin/Release/net472/publish"
+)
 
-write-host "DEBUG:ARTIFACTS_DIRECTORY = $env:ARTIFACTS_DIRECTORY"
+#Create new Directory
+$destDirName = "./MigrationTools-$($githubEvent.release.id)"
+New-Item -Path "$destDirName" -ItemType "Directory" 
+
+foreach ($artifactDir in $publishArtifactsDirs) {
+    if ($(Test-Path $artifactDir) -eq $false) {
+            Write-Host "Artifacts Directory $artifactDir not found!"
+            Exit 1
+        }
+
+    Copy-Item -Path "$artifactDir/*" -Destination $destDirName -Recurse
+}
+
+$zippedArtifacts = Compress-Archive -Path $destDirName -DestinationPath ./MigrationTools-$($githubEvent.release.id).zip
+
 write-host "DEBUG:GITHUB_EVENT_PATH = $env:GITHUB_EVENT_PATH"
 write-host "DEBUG:GITHUB_REPOSITORY = $env:GITHUB_REPOSITORY"
+
 
 
 

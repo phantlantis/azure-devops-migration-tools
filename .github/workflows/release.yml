@@ -14,12 +14,11 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install dependencies
       run: dotnet restore
-    - name: Build
-      run: dotnet publish --configuration Release /property:GenerateFullPaths=true
+    - name: Build/Publish
+      run: dotnet publish /property:GenerateFullPaths=true
     - name: Upload artifacts
       run: pwsh -command "${{github.workspace}}\.github\scripts\upload-artifacts-release.ps1"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_EVENT_PATH: ${{github.event.path}}
         GITHUB_REPOSITORY: ${{github.repository}}
-        ARTIFACTS_DIRECTORY: 'D:/a/azure-devops-migration-tools/azure-devops-migration-tools/src/MigrationTools.ConsoleFull/bin/Release/net472/publish/'
